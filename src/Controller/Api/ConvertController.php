@@ -3,9 +3,9 @@
  * @author Bartłomiej Olewiński <bartlomiej.olewinski@gmail.com>
  */
 
-namespace App\Controller;
+namespace App\Controller\Api;
 
-use App\Service\ExchangeClientInterface;
+use App\Service\ExchangeServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,12 +17,13 @@ class ConvertController extends AbstractController
      * @Route("/api/convert", methods={"GET"})
      * @throws \Psr\Http\Client\ClientExceptionInterface
      */
-    public function index(Request $request, ExchangeClientInterface $client)
+    public function index(Request $request, ExchangeServiceInterface $service): JsonResponse
     {
-        $rub = (float) $request->query->get('rub');
-        $rate = $client->getRate('RUB','PLN');
-        $pln = $rub * $rate;
+        $from = $request->query->get('from');
+        $to = $request->query->get('to');
+        $amount = (float) $request->query->get('amount');
 
-        return new JsonResponse(['rub' => $rub, 'rate' => $rate, 'pln' => $pln]);
+        $result = $service->exchange($from, $to, $amount);
+        return new JsonResponse(['from' => $from, 'to' => $to, 'amount'=> $amount, 'result' => $result]);
     }
 }
