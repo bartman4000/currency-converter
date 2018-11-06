@@ -1,4 +1,12 @@
 {
+    "name": "bartman4000/currency-converter",
+    "description": "PHP Test Task for Orba",
+    "authors": [
+        {
+            "name": "Bartłomiej Olewiński",
+            "email": "bartlomiej.olewinski@gmail.com"
+        }
+    ],
     "type": "project",
     "license": "proprietary",
     "require": {
