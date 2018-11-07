@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Bartłomiej Olewiński <bartlomiej.olewinski@gmail.com>
  */
@@ -46,20 +47,20 @@ class ExchangeService implements ExchangeServiceInterface
             throw new \Exception($e->getMessage(), $this->setForwardErrorCode($e->getCode()), $e);
         }
 
-        $content = json_decode( $response->getBody()->getContents());
+        $content = json_decode($response->getBody()->getContents());
         $rate = $content->rates->{$to};
         $result = $amount * $rate;
-        return round($result, self::PRECISION);
+        return round($result,self::PRECISION);
     }
 
-    function getBaseUri(): string
+    public function getBaseUri(): string
     {
         return self::API_URL;
     }
 
-    protected function setForwardErrorCode(int $code)
+    public function setForwardErrorCode(int $code)
     {
-        $digit = (int)substr($code, 0,1);
+        $digit = (int)substr($code, 0, 1);
         switch ($digit) {
             case 5:
                 return 424; //dependency/3rd party app error

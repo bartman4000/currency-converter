@@ -5,10 +5,9 @@
 
 namespace App\Service;
 
-
 interface ExchangeServiceInterface
 {
     public function exchange(string $from, string $to, float $amount): float;
 
-    function getBaseUri(): string;
+    public function getBaseUri(): string;
 }

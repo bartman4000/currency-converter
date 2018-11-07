@@ -25,8 +25,7 @@ class ConvertController extends AbstractController
 
         try {
             $result = $service->exchange($from, $to, $amount);
-        } catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $logger->error($e->getMessage());
             return new JsonResponse(['error' => $e->getMessage()], $e->getCode());
         }

@@ -23,12 +23,14 @@
         "symfony/form": "*",
         "symfony/framework-bundle": "*",
         "symfony/monolog-bundle": "^3.3",
+        "symfony/test-pack": "^1.0",
         "symfony/twig-bundle": "*",
         "symfony/webpack-encore-bundle": "^1.0",
         "symfony/yaml": "*"
     },
     "require-dev": {
-        "symfony/dotenv": "*"
+        "symfony/dotenv": "*",
+        "symfony/web-server-bundle": "*"
     },
     "config": {
         "preferred-install": {
