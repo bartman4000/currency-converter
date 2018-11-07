@@ -6,6 +6,7 @@
 namespace App\Controller\Api;
 
 use App\Service\ExchangeServiceInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,15 +16,21 @@ class ConvertController extends AbstractController
 {
     /**
      * @Route("/api/convert", methods={"GET"})
-     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
-    public function index(Request $request, ExchangeServiceInterface $service): JsonResponse
+    public function index(Request $request, ExchangeServiceInterface $service, LoggerInterface $logger): JsonResponse
     {
         $from = $request->query->get('from');
         $to = $request->query->get('to');
         $amount = (float) $request->query->get('amount');
 
-        $result = $service->exchange($from, $to, $amount);
+        try {
+            $result = $service->exchange($from, $to, $amount);
+        } catch (\Exception $e)
+        {
+            $logger->error($e->getMessage());
+            return new JsonResponse(['error' => $e->getMessage()], $e->getCode());
+        }
+
         return new JsonResponse(['from' => $from, 'to' => $to, 'amount'=> $amount, 'result' => $result]);
     }
 }

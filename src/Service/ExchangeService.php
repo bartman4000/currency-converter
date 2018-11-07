@@ -6,6 +6,7 @@
 namespace App\Service;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 
 class ExchangeService implements ExchangeServiceInterface
@@ -28,7 +29,8 @@ class ExchangeService implements ExchangeServiceInterface
      * @param string $to
      * @param float $amount
      * @return float
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
+     * @throws \Exception
      */
     public function exchange(string $from, string $to, float $amount): float
     {
@@ -38,7 +40,12 @@ class ExchangeService implements ExchangeServiceInterface
             'GET',
             $this->getBaseUri()."/latest?base={$from}&symbols={$to}"
         );
-        $response = $this->client->send($request);
+        try {
+            $response = $this->client->send($request);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $this->setForwardErrorCode($e->getCode()), $e);
+        }
+
         $content = json_decode( $response->getBody()->getContents());
         $rate = $content->rates->{$to};
         $result = $amount * $rate;
@@ -48,5 +55,23 @@ class ExchangeService implements ExchangeServiceInterface
     function getBaseUri(): string
     {
         return self::API_URL;
+    }
+
+    protected function setForwardErrorCode(int $code)
+    {
+        $digit = (int)substr($code, 0,1);
+        switch ($digit) {
+            case 5:
+                return 424; //dependency/3rd party app error
+                break;
+
+            case 4:
+                return $code; //propagate forward given 4xx error
+                break;
+
+            default:
+                return 500;
+                break;
+        }
     }
 }

@@ -24,6 +24,7 @@ $(document).ready(function() {
 
         // Stop form from submitting normally
         e.preventDefault();
+        $("#form_save").attr("disabled","disabled");
 
         // Get some values from elements on the page:
         var $form = $("#form"),
@@ -36,6 +37,8 @@ $(document).ready(function() {
         posting.done(function( data ) {
             $( "#result" ).empty().append( 'PLN: '+data.result );
         });
+
+        $("#form_save").removeAttr("disabled");
     });
 
 });
