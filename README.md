@@ -1,4 +1,4 @@
-# Orba PHP Test Task
+# Currency converter
 
 ## Build
 
